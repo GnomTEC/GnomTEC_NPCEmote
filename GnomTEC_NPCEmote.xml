@@ -41,7 +41,7 @@
 				</Scripts>
 			</Button>
 			<EditBox name="$parent_NPC" resizable="true" setAllPoints="true" multiline="false" autofocus="false">
-				<FontString inherits="GameFontWhite"/>
+				<FontString inherits="ChatFontNormal"/>
 				<Size x="400" y="18" />
 				<Anchors>
 					<Anchor point="TOPLEFT" relativePoint="TOPRIGHT" relativeTo="$parent_TARGET_BUTTON">
@@ -211,7 +211,7 @@
 				</Frames>
 				<ScrollChild>
 					<EditBox name="$parent_TEXT" parentKey="child" resizable="true" setAllPoints="true" multiline="true" autofocus="false">
-						<FontString inherits="GameFontWhite"/>
+						<FontString inherits="ChatFontNormal"/>
 						<Backdrop bgFile="Interface\Tooltips\UI-Tooltip-Background" tile="true">
 							<TileSize val="16"/>
 							<Color r="0.25" g="0.25" b="0.25"/>

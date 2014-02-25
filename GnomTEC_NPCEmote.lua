@@ -1,6 +1,6 @@
 ﻿-- **********************************************************************
 -- GnomTEC NPCEmote
--- Version: 5.3.0.6
+-- Version: 5.3.0.7
 -- Author: GnomTEC
 -- Copyright 2013 by GnomTEC
 -- http://www.gnomtec.de/
@@ -288,9 +288,20 @@ end
 -- ChatFilter for TRP2 compatible NPC msgs
 -- ----------------------------------------------------------------------
 local function EmoteChatFilter(self, event, msg, author, ...)
-	if (not GnomTEC_NPCEmote_Options["Enabled"]) then
-		return false
-	elseif string.sub(msg,1,3) == "|| " then
+
+	local colorized = false
+	if (GnomTEC_NPCEmote_Options["EnableColorize"]) then
+ 		local count1, count2
+		local color = "|cFF"..string.format("%02X",ChatTypeInfo["SAY"].r*255)..string.format("%02X",ChatTypeInfo["SAY"].g*255)..string.format("%02X",ChatTypeInfo["SAY"].b*255)
+ 			
+ 		msg, count1 = string.gsub(msg,"(%*.-%*)",color.."%1|r")
+		msg, count2 = string.gsub(msg,"(<.->)",color.."%1|r")
+		if (count1+count2 > 0) then
+			colorized = true
+ 		end
+ 	end
+
+	if ((GnomTEC_NPCEmote_Options["Enabled"]) and (string.sub(msg,1,3) == "|| ")) then
 		if string.find(msg,L["TRP2_LOC_DIT"]) then
 			local npc = string.sub(msg,4,string.find(msg,L["TRP2_LOC_DIT"])-2);
 			npc = "|Hplayer:"..author.."|h"..npc.." |h";
@@ -311,12 +322,33 @@ local function EmoteChatFilter(self, event, msg, author, ...)
 		end
 		return true
 	else
-		return false
+ 		if (colorized) then
+ 			return false, msg, author, ...
+ 		else
+ 			return false
+ 		end
 	end
  end
  
  
 local function SayChatFilter(self, event, msg, author, ...)
+	if (not GnomTEC_NPCEmote_Options["EnableColorize"]) then
+		return false
+ 	else
+ 		local count1, count2
+ 		local color = "|cFF"..string.format("%02X",ChatTypeInfo["EMOTE"].r*255)..string.format("%02X",ChatTypeInfo["EMOTE"].g*255)..string.format("%02X",ChatTypeInfo["EMOTE"].b*255)
+ 		
+ 		msg, count1 = string.gsub(msg,"(%*.-%*)",color.."%1|r")
+ 		msg, count2 = string.gsub(msg,"(<.->)",color.."%1|r")
+ 		if (count1+count2 > 0) then
+ 			return false, msg, author, ...
+ 		else
+ 			return false
+ 		end
+ 	end
+ end
+
+local function YellChatFilter(self, event, msg, author, ...)
 	if (not GnomTEC_NPCEmote_Options["EnableColorize"]) then
 		return false
  	else
@@ -385,6 +417,16 @@ function GnomTEC_NPCEmote:ChatCommand_npcw(input)
 
 end
 
+function GnomTEC_NPCEmote:ChatCommand_pete(input)
+	local npc = UnitName("pet")
+
+	if (npc and (nil ~= emptynil(input))) then
+		GnomTEC_NPCEmote:SendEmoteMessage(npc, L["TRP2_LOC_EMOTE"], input)
+	else
+		GnomTEC_NPCEmote:ShowEmoteEditor(npc,L["TRP2_LOC_EMOTE"],input)
+	end
+end
+
 -- ----------------------------------------------------------------------
 -- Addon OnInitialize, OnEnable and OnDisable
 -- ----------------------------------------------------------------------
@@ -401,11 +443,13 @@ function GnomTEC_NPCEmote:OnEnable()
 
 	ChatFrame_AddMessageEventFilter("CHAT_MSG_EMOTE", EmoteChatFilter)
 	ChatFrame_AddMessageEventFilter("CHAT_MSG_SAY", SayChatFilter)
+	ChatFrame_AddMessageEventFilter("CHAT_MSG_YELL", YellChatFilter)
 
 	GnomTEC_NPCEmote:RegisterChatCommand("npce", "ChatCommand_npce")
 	GnomTEC_NPCEmote:RegisterChatCommand("npcs", "ChatCommand_npcs")
 	GnomTEC_NPCEmote:RegisterChatCommand("npcy", "ChatCommand_npcy")
 	GnomTEC_NPCEmote:RegisterChatCommand("npcw", "ChatCommand_npcw")
+	GnomTEC_NPCEmote:RegisterChatCommand("pete", "ChatCommand_pete")
 
 	GnomTEC_NPCEmote:Print("GnomTEC_NPCEmote Enabled")
 	
