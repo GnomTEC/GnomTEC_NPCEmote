@@ -1,6 +1,6 @@
 ﻿-- **********************************************************************
 -- GnomTEC NPCEmote
--- Version: 5.3.0.5
+-- Version: 5.3.0.6
 -- Author: GnomTEC
 -- Copyright 2013 by GnomTEC
 -- http://www.gnomtec.de/
@@ -156,8 +156,8 @@ function GnomTEC_NPCEmote:SendEmoteMessage(npc, emoteType, msg)
 			maxlen = 255 - string.len("|| ")
 		end
 	end
-
-	if (string.len(msg) < maxlen) then
+	
+	if (string.len(msg) <= maxlen) then
 
 		if (L["TRP2_LOC_DIT"] == emoteType) then
 			SendChatMessage("|| "..npc.." "..L["TRP2_LOC_DIT"]..msg,"EMOTE")
@@ -178,7 +178,7 @@ function GnomTEC_NPCEmote:SendEmoteMessage(npc, emoteType, msg)
 		local w
 
 		for w in string.gmatch(msg, "[^ ]+") do
-			if ((string.len(m) + string.len(w)) < maxlen) then
+			if ((string.len(m) + string.len(w)) + 1 <= maxlen) then
 				if ("" ~= m) then
 					m = m.." "..w
 				else
