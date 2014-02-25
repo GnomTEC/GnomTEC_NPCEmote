@@ -1,6 +1,6 @@
 ﻿-- **********************************************************************
 -- GnomTEC NPCEmote
--- Version: 5.4.0.8
+-- Version: 5.4.2.9
 -- Author: GnomTEC
 -- Copyright 2013 by GnomTEC
 -- http://www.gnomtec.de/

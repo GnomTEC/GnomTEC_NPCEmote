@@ -1,6 +1,15 @@
 GnomTEC NPCEmote Addon - Change History 
 ==========================
 
+5.4.2.9 (2013-12-26)
+============
+- Updated Ace3 libraries to version r1104
+- Updated ChatThrottleLib to version v23
+- Added additional locale files for translations to implement all supported languages of WoW
+- Supported languages by author: enUS, deDE
+- With google translated languages: esES, esMX, frFR, itIT, koKR, ptBR, ruRU, zhCN, zhTW
+- Support translations: http://wow.curseforge.com/addons/gnomtec_npcemote/localization/
+
 5.4.0.8 (2013-09-14)
 ============
 - Updated interface version for WoW update 5.4.0
