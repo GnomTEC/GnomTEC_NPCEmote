@@ -1,6 +1,6 @@
 ﻿-- **********************************************************************
 -- GnomTEC NPCEmote
--- Version: 5.4.2.10
+-- Version: 5.4.7.11
 -- Author: GnomTEC
 -- Copyright 2013-2014 by GnomTEC
 -- http://www.gnomtec.de/
@@ -22,6 +22,29 @@ GnomTEC_NPCEmote_Options = {
 -- Addon global variables (local)
 -- ----------------------------------------------------------------------
 
+-- internal used version number since WoW only updates from TOC on game start
+local addonVersion = "5.4.7.11"
+
+-- addonInfo for addon registration to GnomTEC API
+local addonInfo = {
+	["Name"] = "GnomTEC NPCEmote",
+	["Version"] = addonVersion,
+	["Date"] = "2014-02-25",
+	["Author"] = "GnomTEC",
+	["Email"] = "info@gnomtec.de",
+	["Website"] = "http://www.gnomtec.de/",
+	["Copyright"] = "(c)2013-2014 by GnomTEC",
+}
+
+-- GnomTEC API revision
+local GNOMTEC_REVISION = 0
+
+-- Log levels
+local LOG_FATAL 	= 0
+local LOG_ERROR	= 1
+local LOG_WARN		= 2
+local LOG_INFO 	= 3
+local LOG_DEBUG 	= 4
 -- Main options menue with general addon information
 local optionsMain = {
 	name = "GnomTEC NPCEmote",
@@ -112,6 +135,26 @@ local optionsMain = {
 GnomTEC_NPCEmote = LibStub("AceAddon-3.0"):NewAddon("GnomTEC_NPCEmote", "AceConsole-3.0", "AceEvent-3.0", "AceHook-3.0")
 LibStub("AceConfig-3.0"):RegisterOptionsTable("GnomTEC NPCEmote Main", optionsMain)
 LibStub("AceConfigDialog-3.0"):AddToBlizOptions("GnomTEC NPCEmote Main", "GnomTEC NPCEmote");
+
+-- ----------------------------------------------------------------------
+-- Local stubs for the GnomTEC API
+-- ----------------------------------------------------------------------
+
+local function GnomTEC_LogMessage(level, message)
+	if (GnomTEC) then
+		GnomTEC:LogMessage(GnomTEC_NPCEmote, level, message)
+	else
+		if (level < LOG_DEBUG) then
+			GnomTEC_NPCEmote:Print(message)
+		end
+	end
+end
+
+local function GnomTEC_RegisterAddon()
+	if (GnomTEC) then
+		GnomTEC:RegisterAddon(GnomTEC_NPCEmote, addonInfo, GNOMTEC_REVISION)
+	end 
+end
 
 -- ----------------------------------------------------------------------
 -- Local functions
@@ -434,7 +477,8 @@ end
 function GnomTEC_NPCEmote:OnInitialize()
  	-- Code that you want to run when the addon is first loaded goes here.
   
-  	GnomTEC_NPCEmote:Print(L["L_WELCOME"])
+   GnomTEC_RegisterAddon()
+  	GnomTEC_LogMessage(LOG_INFO, L["L_WELCOME"])
   	  	
 end
 
@@ -451,7 +495,7 @@ function GnomTEC_NPCEmote:OnEnable()
 	GnomTEC_NPCEmote:RegisterChatCommand("npcw", "ChatCommand_npcw")
 	GnomTEC_NPCEmote:RegisterChatCommand("pete", "ChatCommand_pete")
 
-	GnomTEC_NPCEmote:Print("GnomTEC_NPCEmote Enabled")
+	GnomTEC_LogMessage(LOG_INFO, "GnomTEC_NPCEmote Enabled")
 	
 	GNOMTEC_NPCEMOTE_FRAME_SELECTEMOTE_BUTTON:SetText(L["TRP2_LOC_EMOTE"])
 
