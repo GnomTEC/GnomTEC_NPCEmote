@@ -1,7 +1,12 @@
 GnomTEC NPCEmote Addon - Change History 
 ==========================
 
-
+V5.3.0.4 (2013-07-10)
+============
+- Input focus will now change to edit fields of emote window after /-command with missing parameters.
+- Pressing ESC in edit fields will clear focus from this field.
+- Pressing TAB in one edit field will change input focus to other edit field
+  
 V5.3.0.3 (2013-07-08)
 ============
 - Added function to colorize "emotes" embedded with "*...*" in /s 

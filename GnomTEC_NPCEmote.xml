@@ -34,6 +34,8 @@
 				</Anchors>
 				<Scripts>
 					<OnClick>
+						GNOMTEC_NPCEMOTE_FRAME_SCROLL_TEXT:ClearFocus();
+						GNOMTEC_NPCEMOTE_FRAME_NPC:ClearFocus();
 						GnomTEC_NPCEmote:GetTargetNPC();
 					</OnClick>
 				</Scripts>
@@ -63,6 +65,15 @@
 						self:EnableKeyboard(true);
 						self:EnableMouse(true);	
 					</OnLoad>
+					<OnEscapePressed>
+						self:ClearFocus();
+					</OnEscapePressed>
+					<OnEnterPressed>
+						GNOMTEC_NPCEMOTE_FRAME_SCROLL_TEXT:SetFocus();
+					</OnEnterPressed>
+					<OnTabPressed>
+						GNOMTEC_NPCEMOTE_FRAME_SCROLL_TEXT:SetFocus();
+					</OnTabPressed>
 				</Scripts>
 			</EditBox>
 			<Button name="$parent_SELECTEMOTE_BUTTON" inherits="GameMenuButtonTemplate" text="">
@@ -81,6 +92,8 @@
 				</Anchors>
 				<Scripts>
 					<OnClick>
+						GNOMTEC_NPCEMOTE_FRAME_SCROLL_TEXT:ClearFocus();
+						GNOMTEC_NPCEMOTE_FRAME_NPC:ClearFocus();
 						GnomTEC_NPCEmote:SelectEmote_Button_OnClick(self, button, down)
 					</OnClick>
 				</Scripts>
@@ -104,6 +117,8 @@
 				</Anchors>
 				<Scripts>
 					<OnClick>
+						GNOMTEC_NPCEMOTE_FRAME_SCROLL_TEXT:ClearFocus();
+						GNOMTEC_NPCEMOTE_FRAME_NPC:ClearFocus();
 						GnomTEC_NPCEmote:SendEmote();
 					</OnClick>
 				</Scripts>
@@ -211,6 +226,12 @@
 								local parent = self:GetParent();
 								parent:UpdateScrollChildRect();
 							</OnSizeChanged>
+							<OnEscapePressed>
+								self:ClearFocus();
+							</OnEscapePressed>
+							<OnTabPressed>
+								GNOMTEC_NPCEMOTE_FRAME_NPC:SetFocus();
+							</OnTabPressed>
 						</Scripts>
 					</EditBox>
 				</ScrollChild>

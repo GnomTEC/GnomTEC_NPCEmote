@@ -1,6 +1,6 @@
 ﻿-- **********************************************************************
 -- GnomTEC NPCEmote
--- Version: 5.3.0.3
+-- Version: 5.3.0.4
 -- Author: GnomTEC
 -- Copyright 2013 by GnomTEC
 -- http://www.gnomtec.de/
@@ -109,13 +109,17 @@ LibStub("AceConfigDialog-3.0"):AddToBlizOptions("GnomTEC NPCEmote Main", "GnomTE
 local function emptynil( x ) return x ~= "" and x or nil end
 
 function GnomTEC_NPCEmote:ShowEmoteEditor(npc,emoteType,input)
+	GNOMTEC_NPCEMOTE_FRAME:Show()	
 	if (nil ~= emptynil(npc)) then
 		GNOMTEC_NPCEMOTE_FRAME_NPC:SetText(npc)
+	else
+		GNOMTEC_NPCEMOTE_FRAME_NPC:SetFocus();
 	end
 	if (nil ~= emptynil(input)) then
 		GNOMTEC_NPCEMOTE_FRAME_SCROLL_TEXT:SetText(input)
+	else
+		GNOMTEC_NPCEMOTE_FRAME_SCROLL_TEXT:SetFocus();
 	end
-	GNOMTEC_NPCEMOTE_FRAME:Show()	
 	if (nil ~= emoteType) then
 		GNOMTEC_NPCEMOTE_FRAME_SELECTEMOTE_BUTTON:SetText(emoteType)
 	else
