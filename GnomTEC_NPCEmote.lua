@@ -1,6 +1,6 @@
 ﻿-- **********************************************************************
 -- GnomTEC NPCEmote
--- Version: 5.3.0.4
+-- Version: 5.3.0.5
 -- Author: GnomTEC
 -- Copyright 2013 by GnomTEC
 -- http://www.gnomtec.de/
@@ -15,6 +15,7 @@ local L = LibStub("AceLocale-3.0"):GetLocale("GnomTEC_NPCEmote")
 GnomTEC_NPCEmote_Options = {
 	["Enabled"] = true,
 	["EnableColorize"] = true,	
+	["Toolbar"] = true,		
 }
 
 -- ----------------------------------------------------------------------
@@ -49,11 +50,21 @@ local optionsMain = {
 			width = 'full',
 			order = 3
 		},
+		npcemoteOptionToolbar = {
+			type = "toggle",
+			name = L["L_OPTIONS_TOOLBAR"],
+			desc = "",
+			set = function(info,val) GnomTEC_NPCEmote_Options["Toolbar"] = val; if (GnomTEC_NPCEmote_Options["Toolbar"]) then GNOMTEC_NPCEMOTE_TOOLBAR:Show(); else GNOMTEC_NPCEMOTE_TOOLBAR:Hide(); end; end,
+	   	get = function(info) return GnomTEC_NPCEmote_Options["Toolbar"] end,
+			width = 'full',
+			order = 4
+		},
+
 		descriptionAbout = {
 			name = "About",
 			type = "group",
 			guiInline = true,
-			order = 4,
+			order = 5,
 			args = {
 				descriptionVersion = {
 				order = 1,
@@ -83,7 +94,7 @@ local optionsMain = {
 			}
 		},
 		descriptionLogo = {
-			order = 5,
+			order = 6,
 			type = "description",
 			name = "",
 			image = "Interface\\AddOns\\GnomTEC_NPCEmote\\Textures\\GnomTEC-Logo",
@@ -120,11 +131,7 @@ function GnomTEC_NPCEmote:ShowEmoteEditor(npc,emoteType,input)
 	else
 		GNOMTEC_NPCEMOTE_FRAME_SCROLL_TEXT:SetFocus();
 	end
-	if (nil ~= emoteType) then
-		GNOMTEC_NPCEMOTE_FRAME_SELECTEMOTE_BUTTON:SetText(emoteType)
-	else
-		GNOMTEC_NPCEMOTE_FRAME_SELECTEMOTE_BUTTON:SetText("emote:")
-	end
+	GNOMTEC_NPCEMOTE_FRAME_SELECTEMOTE_BUTTON:SetText(emoteType)
 end
 
 -- ----------------------------------------------------------------------
@@ -134,38 +141,103 @@ function GnomTEC_NPCEmote:GetTargetNPC()
 	GNOMTEC_NPCEMOTE_FRAME_NPC:SetText(UnitName("target") or "")
 end
 
+function GnomTEC_NPCEmote:SendEmoteMessage(npc, emoteType, msg)
+	local maxlen
+	if (L["TRP2_LOC_DIT"] == emoteType) then
+		maxlen = 255 - string.len("|| "..npc.." "..L["TRP2_LOC_DIT"])
+	elseif (L["TRP2_LOC_CRIE"] == emoteType) then
+		maxlen = 255 - string.len("|| "..npc.." "..L["TRP2_LOC_CRIE"])
+	elseif (L["TRP2_LOC_WHISPER"] == emoteType) then
+		maxlen = 255 - string.len("|| "..npc.." "..L["TRP2_LOC_WHISPER"])
+	else
+		if ("" ~= npc) then
+			maxlen = 255 - string.len("|| "..npc.." ")
+		else
+			maxlen = 255 - string.len("|| ")
+		end
+	end
+
+	if (string.len(msg) < maxlen) then
+
+		if (L["TRP2_LOC_DIT"] == emoteType) then
+			SendChatMessage("|| "..npc.." "..L["TRP2_LOC_DIT"]..msg,"EMOTE")
+		elseif (L["TRP2_LOC_CRIE"] == emoteType) then
+			SendChatMessage("|| "..npc.." "..L["TRP2_LOC_CRIE"]..msg,"EMOTE")
+		elseif (L["TRP2_LOC_WHISPER"] == emoteType) then
+			SendChatMessage("|| "..npc.." "..L["TRP2_LOC_WHISPER"]..msg,"EMOTE")
+		else
+			if ("" ~= npc) then
+				SendChatMessage("|| "..npc.." "..msg,"EMOTE")
+			else
+				SendChatMessage("|| "..msg,"EMOTE")	
+			end
+		end
+	else
+		local m = ""
+		local first = true
+		local w
+
+		for w in string.gmatch(msg, "[^ ]+") do
+			if ((string.len(m) + string.len(w)) < maxlen) then
+				if ("" ~= m) then
+					m = m.." "..w
+				else
+					m = w
+				end
+			else
+				if ("" == m) then
+					-- nobody should type single words that are too long for a line, but if...
+					m = string.sub(w,1,maxlen)
+					w = ""
+				end
+
+				if (first) then
+					GnomTEC_NPCEmote:SendEmoteMessage(npc, emoteType, m)
+					if  (L["TRP2_LOC_EMOTE"] == emoteType) then
+						first = false
+					end
+				else
+					GnomTEC_NPCEmote:SendEmoteMessage("", nil, m)
+				end				
+				m = w
+			end
+		end
+		if ("" ~= m) then
+			if (first) then
+				GnomTEC_NPCEmote:SendEmoteMessage(npc, emoteType, m)
+			else
+				GnomTEC_NPCEmote:SendEmoteMessage("", nil, m)
+			end
+		end
+	end
+end
+
+
 function GnomTEC_NPCEmote:SendEmote()
 	local npc = GNOMTEC_NPCEMOTE_FRAME_NPC:GetText()
 	local input = GNOMTEC_NPCEMOTE_FRAME_SCROLL_TEXT:GetText()
 	local emoteType = GNOMTEC_NPCEMOTE_FRAME_SELECTEMOTE_BUTTON:GetText()
 	local line
 	
-	if (L["TRP2_LOC_DIT"] == emoteType) then
+	
+	if (L["TRP2_LOC_EMOTE"] ~= emoteType) then
 		for line in string.gmatch (input, "[^\n]+") do
-			SendChatMessage("|| "..npc.." "..L["TRP2_LOC_DIT"]..line,"EMOTE")
-		end
-	elseif (L["TRP2_LOC_CRIE"] == emoteType) then
-		for line in string.gmatch (input, "[^\n]+") do
-			SendChatMessage("|| "..npc.." "..L["TRP2_LOC_CRIE"]..line,"EMOTE")
-		end
-	elseif (L["TRP2_LOC_WHISPER"] == emoteType) then
-		for line in string.gmatch (input, "[^\n]+") do
-			SendChatMessage("|| "..npc.." "..L["TRP2_LOC_WHISPER"]..line,"EMOTE")
+			GnomTEC_NPCEmote:SendEmoteMessage(npc, emoteType, line)
 		end
 	else
-		if (npc) then
+		if ("" ~= npc) then
 			local first = true;
 			for line in string.gmatch (input, "[^\n]+") do
 				if (first) then
-					SendChatMessage("|| "..npc.." "..input,"EMOTE")
+					GnomTEC_NPCEmote:SendEmoteMessage(npc, emoteType, line)
 					first = false
 				else
-					SendChatMessage("|| "..line,"EMOTE")	
+					GnomTEC_NPCEmote:SendEmoteMessage("", emoteType, line)
 				end
 			end
 		else
 			for line in string.gmatch (input, "[^\n]+") do
-				SendChatMessage("|| "..line,"EMOTE")	
+				GnomTEC_NPCEmote:SendEmoteMessage("", emoteType, line)
 			end
 		end
 	end
@@ -179,7 +251,7 @@ local function GnomTEC_NPCEmote_SelectEmote_InitializeDropDown(level)
 		func = function (self, arg1, arg2, checked) GNOMTEC_NPCEMOTE_FRAME_SELECTEMOTE_BUTTON:SetText(arg1) end
 	}
 
-	emote.arg1 = "emote:"
+	emote.arg1 = L["TRP2_LOC_EMOTE"]
 	emote.text = emote.arg1
 	UIDropDownMenu_AddButton(emote)
 	emote.arg1 = L["TRP2_LOC_DIT"]
@@ -248,11 +320,12 @@ local function SayChatFilter(self, event, msg, author, ...)
 	if (not GnomTEC_NPCEmote_Options["EnableColorize"]) then
 		return false
  	else
- 		local count
+ 		local count1, count2
  		local color = "|cFF"..string.format("%02X",ChatTypeInfo["EMOTE"].r*255)..string.format("%02X",ChatTypeInfo["EMOTE"].g*255)..string.format("%02X",ChatTypeInfo["EMOTE"].b*255)
  		
- 		msg, count = string.gsub(msg,"(%*.-%*)",color.."%1|r")
- 		if (count > 0) then
+ 		msg, count1 = string.gsub(msg,"(%*.-%*)",color.."%1|r")
+ 		msg, count2 = string.gsub(msg,"(<.->)",color.."%1|r")
+ 		if (count1+count2 > 0) then
  			return false, msg, author, ...
  		else
  			return false
@@ -268,15 +341,15 @@ function GnomTEC_NPCEmote:ChatCommand_npce(input)
 
 	if (npc) then
 		if (nil ~= emptynil(input)) then
-			SendChatMessage("|| "..npc.." "..input,"EMOTE")
+			GnomTEC_NPCEmote:SendEmoteMessage(npc,L["TRP2_LOC_EMOTE"], input)
 		else
-			GnomTEC_NPCEmote:ShowEmoteEditor(npc,nil,input)
+			GnomTEC_NPCEmote:ShowEmoteEditor(npc,L["TRP2_LOC_EMOTE"],input)
 		end
 	else
 		if (nil ~= emptynil(input)) then
-			SendChatMessage("|| "..input,"EMOTE")	
+			GnomTEC_NPCEmote:SendEmoteMessage("", L["TRP2_LOC_EMOTE"], input)
 		else
-			GnomTEC_NPCEmote:ShowEmoteEditor(nil,nil,"")
+			GnomTEC_NPCEmote:ShowEmoteEditor(nil,L["TRP2_LOC_EMOTE"],"")
 		end
 	end
 end
@@ -285,7 +358,7 @@ function GnomTEC_NPCEmote:ChatCommand_npcs(input)
 	local npc = UnitName("target")
 	
 	if (npc and (nil ~= emptynil(input))) then
-		SendChatMessage("|| "..npc.." "..L["TRP2_LOC_DIT"]..input,"EMOTE")
+		GnomTEC_NPCEmote:SendEmoteMessage(npc, L["TRP2_LOC_DIT"], input)
 	else
 		GnomTEC_NPCEmote:ShowEmoteEditor(npc,L["TRP2_LOC_DIT"],input)
 	end
@@ -295,7 +368,7 @@ function GnomTEC_NPCEmote:ChatCommand_npcy(input)
 	local npc = UnitName("target")
 	
 	if (npc and (nil ~= emptynil(input))) then
-		SendChatMessage("|| "..npc.." "..L["TRP2_LOC_CRIE"]..input,"EMOTE")
+		GnomTEC_NPCEmote:SendEmoteMessage(npc, L["TRP2_LOC_CRIE"], input)
 	else
 		GnomTEC_NPCEmote:ShowEmoteEditor(npc,L["TRP2_LOC_CRIE"],input)
 	end
@@ -305,7 +378,7 @@ function GnomTEC_NPCEmote:ChatCommand_npcw(input)
 	local npc = UnitName("target")
 	
 	if (npc and (nil ~= emptynil(input))) then
-		SendChatMessage("|| "..npc.." "..L["TRP2_LOC_WHISPER"]..input,"EMOTE")
+		GnomTEC_NPCEmote:SendEmoteMessage(npc, L["TRP2_LOC_WHISPER"], input)
 	else
 		GnomTEC_NPCEmote:ShowEmoteEditor(npc,L["TRP2_LOC_WHISPER"],input)
 	end
@@ -335,11 +408,22 @@ function GnomTEC_NPCEmote:OnEnable()
 	GnomTEC_NPCEmote:RegisterChatCommand("npcw", "ChatCommand_npcw")
 
 	GnomTEC_NPCEmote:Print("GnomTEC_NPCEmote Enabled")
+	
+	GNOMTEC_NPCEMOTE_FRAME_SELECTEMOTE_BUTTON:SetText(L["TRP2_LOC_EMOTE"])
+
 
 	-- Initialize options which are propably not valid because they are new added in new versions of addon
 	if (nil == GnomTEC_NPCEmote_Options["EnableColorize"]) then
 		GnomTEC_NPCEmote_Options["EnableColorize"] = false
 	end
+	if (nil == GnomTEC_NPCEmote_Options["Toolbar"]) then
+		GnomTEC_NPCEmote_Options["Toolbar"] = false
+	end
+	
+	if (GnomTEC_NPCEmote_Options["Toolbar"]) then
+		GNOMTEC_NPCEMOTE_TOOLBAR:Show()
+	end
+
 	
 end
 

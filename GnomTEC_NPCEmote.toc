@@ -2,7 +2,7 @@
 ## Title: GnomTEC_NPCEmote
 ## Notes: Addon to make emotes for NPCs
 ## Author: GnomTEC
-## Version: 5.3.0.4
+## Version: 5.3.0.5
 ## SavedVariablesPerCharacter: GnomTEC_NPCEmote_Options
 
 embeds.xml
