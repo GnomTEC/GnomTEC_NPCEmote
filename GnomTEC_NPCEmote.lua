@@ -1,6 +1,6 @@
 ﻿-- **********************************************************************
 -- GnomTEC NPCEmote
--- Version: 5.3.0.2
+-- Version: 5.3.0.3
 -- Author: GnomTEC
 -- Copyright 2013 by GnomTEC
 -- http://www.gnomtec.de/
@@ -14,6 +14,7 @@ local L = LibStub("AceLocale-3.0"):GetLocale("GnomTEC_NPCEmote")
 
 GnomTEC_NPCEmote_Options = {
 	["Enabled"] = true,
+	["EnableColorize"] = true,	
 }
 
 -- ----------------------------------------------------------------------
@@ -30,7 +31,7 @@ local optionsMain = {
 			type = "description",
 			name = L["L_OPTIONS_TITLE"],
 		},
-		babelOptionEnable = {
+		npcemoteOptionEnable = {
 			type = "toggle",
 			name = L["L_OPTIONS_ENABLE"],
 			desc = "",
@@ -38,6 +39,15 @@ local optionsMain = {
 			get = function(info) return GnomTEC_NPCEmote_Options["Enabled"] end,
 			width = 'full',
 			order = 2
+		},
+		npcemoteOptionEnableColorize = {
+			type = "toggle",
+			name = L["L_OPTIONS_ENABLECOLORIZE"],
+			desc = "",
+			set = function(info,val) GnomTEC_NPCEmote_Options["EnableColorize"] = val;  end,
+			get = function(info) return GnomTEC_NPCEmote_Options["EnableColorize"] end,
+			width = 'full',
+			order = 3
 		},
 		descriptionAbout = {
 			name = "About",
@@ -229,6 +239,23 @@ local function EmoteChatFilter(self, event, msg, author, ...)
 	end
  end
  
+ 
+local function SayChatFilter(self, event, msg, author, ...)
+	if (not GnomTEC_NPCEmote_Options["EnableColorize"]) then
+		return false
+ 	else
+ 		local count
+ 		local color = "|cFF"..string.format("%02X",ChatTypeInfo["EMOTE"].r*255)..string.format("%02X",ChatTypeInfo["EMOTE"].g*255)..string.format("%02X",ChatTypeInfo["EMOTE"].b*255)
+ 		
+ 		msg, count = string.gsub(msg,"(%*.-%*)",color.."%1|r")
+ 		if (count > 0) then
+ 			return false, msg, author, ...
+ 		else
+ 			return false
+ 		end
+ 	end
+ end
+ 
 -- ----------------------------------------------------------------------
 -- chat commands
 -- ----------------------------------------------------------------------
@@ -296,6 +323,7 @@ function GnomTEC_NPCEmote:OnEnable()
     -- Called when the addon is enabled
 
 	ChatFrame_AddMessageEventFilter("CHAT_MSG_EMOTE", EmoteChatFilter)
+	ChatFrame_AddMessageEventFilter("CHAT_MSG_SAY", SayChatFilter)
 
 	GnomTEC_NPCEmote:RegisterChatCommand("npce", "ChatCommand_npce")
 	GnomTEC_NPCEmote:RegisterChatCommand("npcs", "ChatCommand_npcs")
@@ -305,6 +333,9 @@ function GnomTEC_NPCEmote:OnEnable()
 	GnomTEC_NPCEmote:Print("GnomTEC_NPCEmote Enabled")
 
 	-- Initialize options which are propably not valid because they are new added in new versions of addon
+	if (nil == GnomTEC_NPCEmote_Options["EnableColorize"]) then
+		GnomTEC_NPCEmote_Options["EnableColorize"] = false
+	end
 	
 end
 
