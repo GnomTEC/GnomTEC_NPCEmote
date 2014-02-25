@@ -10,5 +10,5 @@ L["L_OPTIONS_TOOLBAR"] = "Mostrar barra de herramientas de la ventana emote most
 L["L_WELCOME"] = "Bienvenido a GnomTEC_NPCEmote"
 L["TRP2_LOC_DIT"] = "dice: "
 L["TRP2_LOC_CRIE"] = "grita: "
-L["TRP2_LOC_WHISPER"] = "whispers: "
-L["TRP2_LOC_EMOTE"] = "te susurra: "
+L["TRP2_LOC_WHISPER"] = "te susurra: "
+L["TRP2_LOC_EMOTE"] = "emotes: "

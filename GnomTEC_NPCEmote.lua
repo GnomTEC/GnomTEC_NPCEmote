@@ -1,8 +1,8 @@
 ﻿-- **********************************************************************
 -- GnomTEC NPCEmote
--- Version: 5.4.2.9
+-- Version: 5.4.2.10
 -- Author: GnomTEC
--- Copyright 2013 by GnomTEC
+-- Copyright 2013-2014 by GnomTEC
 -- http://www.gnomtec.de/
 -- **********************************************************************
 -- load localization first.
@@ -89,7 +89,7 @@ local optionsMain = {
 				descriptionLicense = {
 					order = 5,
 					type = "description",
-					name = "|cffffd700".."Copyright"..": ".._G["HIGHLIGHT_FONT_COLOR_CODE"].."(c)2013 by GnomTEC",
+					name = "|cffffd700".."Copyright"..": ".._G["HIGHLIGHT_FONT_COLOR_CODE"].."(c)2013-2014 by GnomTEC",
 				},
 			}
 		},
@@ -289,18 +289,6 @@ end
 -- ----------------------------------------------------------------------
 local function EmoteChatFilter(self, event, msg, author, ...)
 
-	local colorized = false
-	if (GnomTEC_NPCEmote_Options["EnableColorize"]) then
- 		local count1, count2
-		local color = "|cFF"..string.format("%02X",ChatTypeInfo["SAY"].r*255)..string.format("%02X",ChatTypeInfo["SAY"].g*255)..string.format("%02X",ChatTypeInfo["SAY"].b*255)
- 			
- 		msg, count1 = string.gsub(msg,"(%*.-%*)",color.."%1|r")
-		msg, count2 = string.gsub(msg,"(<.->)",color.."%1|r")
-		if (count1+count2 > 0) then
-			colorized = true
- 		end
- 	end
-
 	if ((GnomTEC_NPCEmote_Options["Enabled"]) and (string.sub(msg,1,3) == "|| ")) then
 		if string.find(msg,L["TRP2_LOC_DIT"]) then
 			local npc = string.sub(msg,4,string.find(msg,L["TRP2_LOC_DIT"])-2);
@@ -322,7 +310,19 @@ local function EmoteChatFilter(self, event, msg, author, ...)
 		end
 		return true
 	else
- 		if (colorized) then
+ 		local colorized = false
+		if (GnomTEC_NPCEmote_Options["EnableColorize"]) then
+ 			local count1, count2, count3
+			local color = "|cFF"..string.format("%02X",ChatTypeInfo["SAY"].r*255)..string.format("%02X",ChatTypeInfo["SAY"].g*255)..string.format("%02X",ChatTypeInfo["SAY"].b*255)
+ 			
+	 		msg, count1 = string.gsub(msg,"(%*.-%*)",color.."%1|r")
+			msg, count2 = string.gsub(msg,"(<.->)",color.."%1|r")
+			msg, count3 = string.gsub(msg,"(\".-\")",color.."%1|r")
+			if (count1+count2+count3 > 0) then
+				colorized = true
+ 			end
+ 		end
+		if (colorized) then
  			return false, msg, author, ...
  		else
  			return false

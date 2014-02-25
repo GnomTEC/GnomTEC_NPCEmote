@@ -1,6 +1,11 @@
 GnomTEC NPCEmote Addon - Change History 
 ==========================
 
+5.4.2.10 (2014-01-11)
+============
+- fixed wrong translation in esES and esMX which prevents correct NPC whisper
+- Changed function to colorize also embedded "say" in /e to support also '"..."'
+
 5.4.2.9 (2013-12-26)
 ============
 - Updated Ace3 libraries to version r1104
