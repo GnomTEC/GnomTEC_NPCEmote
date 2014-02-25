@@ -1,6 +1,6 @@
 ﻿-- **********************************************************************
 -- GnomTEC NPCEmote
--- Version: 5.3.0.1
+-- Version: 5.3.0.2
 -- Author: GnomTEC
 -- Copyright 2013 by GnomTEC
 -- http://www.gnomtec.de/
@@ -95,10 +95,100 @@ LibStub("AceConfigDialog-3.0"):AddToBlizOptions("GnomTEC NPCEmote Main", "GnomTE
 -- ----------------------------------------------------------------------
 -- Local functions
 -- ----------------------------------------------------------------------
+-- function which returns also nil for empty strings
+local function emptynil( x ) return x ~= "" and x or nil end
+
+function GnomTEC_NPCEmote:ShowEmoteEditor(npc,emoteType,input)
+	if (nil ~= emptynil(npc)) then
+		GNOMTEC_NPCEMOTE_FRAME_NPC:SetText(npc)
+	end
+	if (nil ~= emptynil(input)) then
+		GNOMTEC_NPCEMOTE_FRAME_SCROLL_TEXT:SetText(input)
+	end
+	GNOMTEC_NPCEMOTE_FRAME:Show()	
+	if (nil ~= emoteType) then
+		GNOMTEC_NPCEMOTE_FRAME_SELECTEMOTE_BUTTON:SetText(emoteType)
+	else
+		GNOMTEC_NPCEMOTE_FRAME_SELECTEMOTE_BUTTON:SetText("emote:")
+	end
+end
 
 -- ----------------------------------------------------------------------
 -- Frame event handler and functions
 -- ----------------------------------------------------------------------
+function GnomTEC_NPCEmote:GetTargetNPC()
+	GNOMTEC_NPCEMOTE_FRAME_NPC:SetText(UnitName("target") or "")
+end
+
+function GnomTEC_NPCEmote:SendEmote()
+	local npc = GNOMTEC_NPCEMOTE_FRAME_NPC:GetText()
+	local input = GNOMTEC_NPCEMOTE_FRAME_SCROLL_TEXT:GetText()
+	local emoteType = GNOMTEC_NPCEMOTE_FRAME_SELECTEMOTE_BUTTON:GetText()
+	local line
+	
+	if (L["TRP2_LOC_DIT"] == emoteType) then
+		for line in string.gmatch (input, "[^\n]+") do
+			SendChatMessage("|| "..npc.." "..L["TRP2_LOC_DIT"]..line,"EMOTE")
+		end
+	elseif (L["TRP2_LOC_CRIE"] == emoteType) then
+		for line in string.gmatch (input, "[^\n]+") do
+			SendChatMessage("|| "..npc.." "..L["TRP2_LOC_CRIE"]..line,"EMOTE")
+		end
+	elseif (L["TRP2_LOC_WHISPER"] == emoteType) then
+		for line in string.gmatch (input, "[^\n]+") do
+			SendChatMessage("|| "..npc.." "..L["TRP2_LOC_WHISPER"]..line,"EMOTE")
+		end
+	else
+		if (npc) then
+			local first = true;
+			for line in string.gmatch (input, "[^\n]+") do
+				if (first) then
+					SendChatMessage("|| "..npc.." "..input,"EMOTE")
+					first = false
+				else
+					SendChatMessage("|| "..line,"EMOTE")	
+				end
+			end
+		else
+			for line in string.gmatch (input, "[^\n]+") do
+				SendChatMessage("|| "..line,"EMOTE")	
+			end
+		end
+	end
+	
+end
+
+-- initialize drop down menu emote type
+local function GnomTEC_NPCEmote_SelectEmote_InitializeDropDown(level)
+	local emote = {
+		notCheckable = 1,
+		func = function (self, arg1, arg2, checked) GNOMTEC_NPCEMOTE_FRAME_SELECTEMOTE_BUTTON:SetText(arg1) end
+	}
+
+	emote.arg1 = "emote:"
+	emote.text = emote.arg1
+	UIDropDownMenu_AddButton(emote)
+	emote.arg1 = L["TRP2_LOC_DIT"]
+	emote.text = emote.arg1
+	UIDropDownMenu_AddButton(emote)
+	emote.arg1 = L["TRP2_LOC_CRIE"]
+	emote.text = emote.arg1
+	UIDropDownMenu_AddButton(emote)
+	emote.arg1 = L["TRP2_LOC_WHISPER"]
+	emote.text = emote.arg1
+	UIDropDownMenu_AddButton(emote)
+
+end
+
+-- select emote type drop down menu OnLoad
+function GnomTEC_NPCEmote:SelectEmote_DropDown_OnLoad(self)
+	UIDropDownMenu_Initialize(self, GnomTEC_NPCEmote_SelectEmote_InitializeDropDown, "MENU")
+end
+
+-- select emote type drop down menu OnClick
+function GnomTEC_NPCEmote:SelectEmote_Button_OnClick(self, button, down)
+	ToggleDropDownMenu(1, nil, GNOMTEC_NPCEMOTE_FRAME_SELECTEMOTE_DROPDOWN, self:GetName(), 0, 0)
+end
 
 -- ----------------------------------------------------------------------
 -- Hook functions
@@ -143,23 +233,52 @@ local function EmoteChatFilter(self, event, msg, author, ...)
 -- chat commands
 -- ----------------------------------------------------------------------
 function GnomTEC_NPCEmote:ChatCommand_npce(input)
-	local npc = UnitName("target") or "?"
-	SendChatMessage("|| "..npc.." "..input,"EMOTE")
+	local npc = UnitName("target")
+
+	if (npc) then
+		if (nil ~= emptynil(input)) then
+			SendChatMessage("|| "..npc.." "..input,"EMOTE")
+		else
+			GnomTEC_NPCEmote:ShowEmoteEditor(npc,nil,input)
+		end
+	else
+		if (nil ~= emptynil(input)) then
+			SendChatMessage("|| "..input,"EMOTE")	
+		else
+			GnomTEC_NPCEmote:ShowEmoteEditor(nil,nil,"")
+		end
+	end
 end
 
 function GnomTEC_NPCEmote:ChatCommand_npcs(input)
-	local npc = UnitName("target") or "?"
-	SendChatMessage("|| "..npc.." "..L["TRP2_LOC_DIT"]..input,"EMOTE")
+	local npc = UnitName("target")
+	
+	if (npc and (nil ~= emptynil(input))) then
+		SendChatMessage("|| "..npc.." "..L["TRP2_LOC_DIT"]..input,"EMOTE")
+	else
+		GnomTEC_NPCEmote:ShowEmoteEditor(npc,L["TRP2_LOC_DIT"],input)
+	end
 end
 
 function GnomTEC_NPCEmote:ChatCommand_npcy(input)
-	local npc = UnitName("target") or "?"
-	SendChatMessage("|| "..npc.." "..L["TRP2_LOC_CRIE"]..input,"EMOTE")
+	local npc = UnitName("target")
+	
+	if (npc and (nil ~= emptynil(input))) then
+		SendChatMessage("|| "..npc.." "..L["TRP2_LOC_CRIE"]..input,"EMOTE")
+	else
+		GnomTEC_NPCEmote:ShowEmoteEditor(npc,L["TRP2_LOC_CRIE"],input)
+	end
 end
 
 function GnomTEC_NPCEmote:ChatCommand_npcw(input)
-	local npc = UnitName("target") or "?"
-	SendChatMessage("|| "..npc.." "..L["TRP2_LOC_WHISPER"]..input,"EMOTE")
+	local npc = UnitName("target")
+	
+	if (npc and (nil ~= emptynil(input))) then
+		SendChatMessage("|| "..npc.." "..L["TRP2_LOC_WHISPER"]..input,"EMOTE")
+	else
+		GnomTEC_NPCEmote:ShowEmoteEditor(npc,L["TRP2_LOC_WHISPER"],input)
+	end
+
 end
 
 -- ----------------------------------------------------------------------
