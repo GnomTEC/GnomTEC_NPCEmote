@@ -1,5 +1,8 @@
 == GnomTEC NPCEmote - Change History 
 
+=== 5.4.7.12 (2014-03-15)
+* Maintenance update
+
 === 5.4.7.11 (2014-02-25)
 * Added support of GnomTEC_Assistant.
 

@@ -1,6 +1,6 @@
 ﻿-- **********************************************************************
 -- GnomTEC NPCEmote
--- Version: 5.4.7.11
+-- Version: 5.4.7.12
 -- Author: GnomTEC
 -- Copyright 2013-2014 by GnomTEC
 -- http://www.gnomtec.de/
@@ -23,13 +23,13 @@ GnomTEC_NPCEmote_Options = {
 -- ----------------------------------------------------------------------
 
 -- internal used version number since WoW only updates from TOC on game start
-local addonVersion = "5.4.7.11"
+local addonVersion = "5.4.7.12"
 
 -- addonInfo for addon registration to GnomTEC API
 local addonInfo = {
 	["Name"] = "GnomTEC NPCEmote",
 	["Version"] = addonVersion,
-	["Date"] = "2014-02-25",
+	["Date"] = "2014-03-12",
 	["Author"] = "GnomTEC",
 	["Email"] = "info@gnomtec.de",
 	["Website"] = "http://www.gnomtec.de/",
@@ -141,19 +141,12 @@ LibStub("AceConfigDialog-3.0"):AddToBlizOptions("GnomTEC NPCEmote Main", "GnomTE
 -- ----------------------------------------------------------------------
 
 local function GnomTEC_LogMessage(level, message)
-	if (GnomTEC) then
-		GnomTEC:LogMessage(GnomTEC_NPCEmote, level, message)
-	else
-		if (level < LOG_DEBUG) then
-			GnomTEC_NPCEmote:Print(message)
-		end
+	if (level < LOG_DEBUG) then
+		GnomTEC_NPCEmote:Print(message)
 	end
 end
 
 local function GnomTEC_RegisterAddon()
-	if (GnomTEC) then
-		GnomTEC:RegisterAddon(GnomTEC_NPCEmote, addonInfo, GNOMTEC_REVISION)
-	end 
 end
 
 -- ----------------------------------------------------------------------
