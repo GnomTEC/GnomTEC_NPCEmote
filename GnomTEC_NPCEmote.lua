@@ -1,6 +1,6 @@
 ﻿-- **********************************************************************
 -- GnomTEC NPCEmote
--- Version: 5.4.8.13
+-- Version: 6.0.2.14
 -- Author: GnomTEC
 -- Copyright 2013-2014 by GnomTEC
 -- http://www.gnomtec.de/
@@ -23,13 +23,13 @@ GnomTEC_NPCEmote_Options = {
 -- ----------------------------------------------------------------------
 
 -- internal used version number since WoW only updates from TOC on game start
-local addonVersion = "5.4.8.13"
+local addonVersion = "6.0.2.14"
 
 -- addonInfo for addon registration to GnomTEC API
 local addonInfo = {
 	["Name"] = "GnomTEC NPCEmote",
 	["Version"] = addonVersion,
-	["Date"] = "2014-10-10",
+	["Date"] = "2014-10-15",
 	["Author"] = "GnomTEC",
 	["Email"] = "info@gnomtec.de",
 	["Website"] = "http://www.gnomtec.de/",
