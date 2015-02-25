@@ -1,5 +1,8 @@
 package-as: GnomTEC_NPCEmote
 
+required-dependencies:
+    - GnomTEC
+    
 manual-changelog:
     filename: history.txt
     markup-type: creole
