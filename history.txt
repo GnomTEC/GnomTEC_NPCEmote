@@ -1,9 +1,10 @@
 == GnomTEC NPCEmote - Change History 
 
-=== 6.1.0.15 (2015-02-25)
+=== 6.1.0.15 (2015-03-08)
 * Added some missing translation IDs
 * Added russion translation from Taylor2937
 * Migrated to GnomTEC Addon Framework
+* Replaced toolbar with databroker object and minimap icons
 * Updatet TOC for WoW Version 6.1.0
 
 === 6.0.2.14 (2014-10-15)

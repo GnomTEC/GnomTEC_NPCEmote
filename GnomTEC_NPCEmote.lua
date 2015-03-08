@@ -29,12 +29,13 @@ local addonInfo = {
 	["Name"] = "GnomTEC NPCEmote",
 	["Description"] = L["L_DESCRIPTION"],	
 	["Version"] = "6.1.0.15",
-	["Date"] = "2015-02-25",
+	["Date"] = "2015-03-08",
 	["Author"] = "Peter Jack",
 	["Email"] = "info@gnomtec.de",
 	["Website"] = "http://www.gnomtec.de/",
 	["Copyright"] = "© 2013-2015 by Peter Jack",
 	["License"] = "European Union Public Licence (EUPL v.1.1)",	
+	["FrameworkRevision"] = 1
 }
 
 -- ----------------------------------------------------------------------
@@ -135,6 +136,12 @@ local function GnomTECNPCEmote()
 	-- call base class
 	local addon, protected = GnomTECAddon("GnomTEC_NPCEmote", addonInfo, defaultsDb, optionsArray)
 	
+	-- when we got nil from base class there is a major issue and we will stop here.
+	-- GnomTEC framework will inform the user by itself about the issue.
+	if (nil == addon) then
+		return self
+	end
+	
 	-- options get/set functions table
 	local options = {
 		["Enabled"] = {
@@ -146,7 +153,7 @@ local function GnomTECNPCEmote()
 			set = function(val) addon.db.char["EnableColorize"] = val end,
 		},
 		["ShowMinimapIcon"]  = {
-			get = function() return addon.db.char["ShowMinimapIcon"], addon.ShowMinimapIcon(addonDataObject) end,
+			get = function() return addon.db.char["ShowMinimapIcon"] end,
 			set = function(val) addon.db.char["ShowMinimapIcon"] = val; if (val) then addon.ShowMinimapIcon(addonDataObject); else addon.HideMinimapIcon(); end; end,
 		}		
 	}
@@ -241,7 +248,7 @@ local function GnomTECNPCEmote()
 	local function OnClickMainWindowSend(widget, button)
 		local npc = mainWindowWidgets.mainWindowTargetChar.GetText()
 		local input = mainWindowWidgets.mainWindowText.GetText()
-		local emoteType = L["TRP2_LOC_EMOTE"] -- mainWindowWidgets.mainWindowDropDownButton.GetText()
+		local emoteType = mainWindowWidgets.mainWindowDropDownButton.GetSelectedValue()
 		local line
 	
 		if (L["TRP2_LOC_EMOTE"] ~= emoteType) then
@@ -272,14 +279,14 @@ local function GnomTECNPCEmote()
 		if (nil ~= emptynil(npc)) then
 			mainWindowWidgets.mainWindowTargetChar.SetText(npc)
 		else
---			mainWindowWidgets.mainWindowTargetChar.SetFocus();
+			mainWindowWidgets.mainWindowTargetChar.SetFocus();
 		end
 		if (nil ~= emptynil(input)) then
 			mainWindowWidgets.mainWindowText.SetText(input)
 		else
---			mainWindowWidgets.mainWindowText.SetFocus();
+			mainWindowWidgets.mainWindowText.SetFocus();
 		end
---		mainWindowWidgets.mainWindowDropDownButton.SetText(emoteType)
+		mainWindowWidgets.mainWindowDropDownButton.SetSelectedValue(emoteType)
 	end
 
 	-- ----------------------------------------------------------------------
