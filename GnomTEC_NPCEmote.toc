@@ -1,8 +1,8 @@
-## Interface: 60200
+## Interface: 70000
 ## Title: GnomTEC_NPCEmote
 ## Notes: Addon to make emotes for NPCs
 ## Author: GnomTEC
-## Version: 6.2.0.16
+## Version: 7.0.3.17
 ## Dependencies: GnomTEC
 ## SavedVariables: GnomTEC_NPCEmoteDB
 ## SavedVariablesPerCharacter: GnomTEC_NPCEmote_Options
