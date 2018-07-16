@@ -1,5 +1,8 @@
 == GnomTEC NPCEmote - Change History 
 
+=== 8.0.1.21 (2018-07-16)
+* Updated TOC for WoW patch 8.0.0 (BfA)
+
 === 7.3.0.20 (2017-08-30)
 * Updated TOC for WoW patch 7.3.0
 
