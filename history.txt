@@ -1,5 +1,8 @@
 == GnomTEC NPCEmote - Change History 
 
+=== 8.2.0.22 (2019-06-26)
+* Updated TOC for WoW patch 8.2.0 (BfA)
+
 === 8.1.0.22 (2019-01-05)
 * Updated TOC for WoW patch 8.1.0 (BfA)
 * fixed GnomTECWidgetEditBox focus issue when clicking in area where is no line yet (indirect through GnomTEC Framework)
