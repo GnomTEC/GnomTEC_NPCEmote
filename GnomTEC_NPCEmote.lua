@@ -1,10 +1,10 @@
 ﻿-- **********************************************************************
 -- GnomTEC NPCEmote
--- Version: 8.2.5.23
+-- Version: 9.0.1.24
 -- Author: Peter Jack
 -- URL: http://www.gnomtec.de/
 -- **********************************************************************
--- Copyright © 2013-2019 by Peter Jack
+-- Copyright © 2013-2020 by Peter Jack
 --
 -- Licensed under the EUPL, Version 1.1 only (the "Licence");
 -- You may not use this work except in compliance with the Licence.
@@ -28,12 +28,12 @@ local L = LibStub("AceLocale-3.0"):GetLocale("GnomTEC_NPCEmote")
 local addonInfo = {
 	["Name"] = "GnomTEC NPCEmote",
 	["Description"] = L["L_DESCRIPTION"],	
-	["Version"] = "8.2.5.23",
-	["Date"] = "2019-12-22",
+	["Version"] = "9.0.1.24",
+	["Date"] = "2020-10-19",
 	["Author"] = "Peter Jack",
 	["Email"] = "info@gnomtec.de",
 	["Website"] = "http://www.gnomtec.de/",
-	["Copyright"] = "© 2013-2019 by Peter Jack",
+	["Copyright"] = "© 2013-2020 by Peter Jack",
 	["License"] = "European Union Public Licence (EUPL v.1.1)",	
 	["FrameworkRevision"] = 13
 }
