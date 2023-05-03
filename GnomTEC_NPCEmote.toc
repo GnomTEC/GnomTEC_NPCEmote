@@ -1,9 +1,9 @@
-## Interface: 100007
-# retail: 100007 classic: 11303
+## Interface: 100100
+# retail: 100100 classic: 11303
 ## Title: GnomTEC_NPCEmote
 ## Notes: Addon to make emotes for NPCs
 ## Author: GnomTEC
-## Version: 10.0.7.24
+## Version: 10.1.0.24
 ## Dependencies: GnomTEC
 ## SavedVariables: GnomTEC_NPCEmoteDB
 ## SavedVariablesPerCharacter: GnomTEC_NPCEmote_Options
