@@ -1,5 +1,8 @@
 == GnomTEC NPCEmote - Change History 
 
+=== 10.2.0.24 (2023-11-10)
+* Updated TOC for WoW patch 10.2.0
+
 === 10.1.7.24 (2023-09-13)
 * Updated TOC for WoW patch 10.1.7
 
